@@ -1,0 +1,10 @@
+*/pkg
+*/src
+*/*/
+*.zip
+*.tar*
+*.rpm
+*.deb
+*.bak
+zz__old
+/.project
