@@ -4,7 +4,7 @@
 # Contributor: Vsevolod Balashov <vsevolod at balashov dot name>
 
 pkgbase=gunicorn
-pkgname=('gunicorn' 'python2-gunicorn')
+pkgname=('python-gunicorn' 'python2-gunicorn')
 pkgver=19.6.0
 pkgrel=2
 pkgdesc='WSGI HTTP Server for UNIX'
@@ -28,8 +28,10 @@ build() {
 }
 
 
-package_gunicorn() {
+package_python-gunicorn() {
   depends=('python')
+  replaces=('gunicorn')
+  provides=('gunicorn')
   optdepends=(
     'python-eventlet: For asynchronous request handling with eventlet.'
     'python-gevent: For asynchronous request handling with gevent.'
@@ -47,7 +49,6 @@ package_python2-gunicorn() {
   depends=('python2')
   replaces=('gunicorn-python2')
   provides=('python2-gunicorn')
-  conflicts=('gunicorn-python2')
   optdepends=(
     'python2-eventlet: For asynchronous request handling with eventlet.'
     'python2-gevent: For asynchronous request handling with gevent.'
