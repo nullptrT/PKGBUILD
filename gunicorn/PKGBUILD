@@ -31,6 +31,7 @@ build() {
 package_python-gunicorn() {
   depends=('python')
   provides=('gunicorn' 'python-gunicorn')
+  replaces=('gunicorn')
   optdepends=(
     'python-eventlet: For asynchronous request handling with eventlet.'
     'python-gevent: For asynchronous request handling with gevent.'
@@ -47,6 +48,7 @@ package_python-gunicorn() {
 package_python2-gunicorn() {
   depends=('python2')
   provides=('python2-gunicorn' 'gunicorn-python2')
+  replaces=('gunicorn-python2')
   optdepends=(
     'python2-eventlet: For asynchronous request handling with eventlet.'
     'python2-gevent: For asynchronous request handling with gevent.'
