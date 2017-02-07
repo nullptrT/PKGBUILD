@@ -54,7 +54,7 @@ package_python2-gunicorn() {
     'python2-gevent: For asynchronous request handling with gevent.'
   )
 
-  cd "${srcdir}/${pkgbase}-${pkgver}"
+  cd "${srcdir}/${pkgbase}-${pkgver}-python2"
 
   python setup.py install --root="${pkgdir}" --prefix=/usr --optimize=1
 
