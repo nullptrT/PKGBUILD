@@ -1,28 +1,65 @@
-# Maintainer: Sebastian Lau <lauseb644 _at_ gmail _dot_ com>
-# Contributor: Jeremy "Ichimonji10" Audet <ichimonji10 at gmail dot com>
+# Maintainer: Jeremy "Ichimonji10" Audet <ichimonji10 at gmail dot com>
+# Contributor: Sebastian Lau <lauseb644 at gmail dot com>
 # Contributor: pumpkin <pumpkin at mailoo dot org>
 # Contributor: Vsevolod Balashov <vsevolod at balashov dot name>
 
-pkgname=python2-gunicorn
-_pkgname=gunicorn
+pkgbase=gunicorn
+pkgname=('gunicorn' 'python2-gunicorn')
 pkgver=19.6.0
-pkgrel=1
+pkgrel=2
 pkgdesc='WSGI HTTP Server for UNIX'
-arch=('x86_64' 'i686' 'armv7h' 'armv6h')
+arch=(any)
 url='http://gunicorn.org/'
-license=('MIT')
-depends=('python2')
-makedepends=('python2-distribute')
-provides=('gunicorn-python2')
-conflicts=('gunicorn-python2')
-source=("$pkgname-$pkgver.tar.gz::https://github.com/benoitc/${_pkgname}/archive/${pkgver}.tar.gz")
+license=(MIT)
+makedepends=('python-setuptools' 'python2-setuptools')
+source=("$pkgbase-$pkgver::https://github.com/benoitc/${pkgbase}/archive/${pkgver}.tar.gz")
 sha256sums=('1e0de4957bea60bfcff5215664bdfc3cf02c78e2aae9586766a9b4b437aebbb0')
 
-package() {
-  cd "${srcdir}/${_pkgname}-${pkgver}"
-  python2 setup.py install --root="${pkgdir}" --prefix=/usr --optimize=1
-  mv "${pkgdir}/usr/bin/gunicorn" "${pkgdir}/usr/bin/gunicorn-python2"
+prepare() {
+  cp -a "${srcdir}/${pkgbase}-${pkgver}"{,-python2}
+}
+
+build() {
+  cd "${srcdir}/${pkgbase}-${pkgver}"
+  python setup.py build
+
+  cd "${srcdir}/${pkgbase}-${pkgver}-python2"
+  python2 setup.py build
+}
+
+
+package_gunicorn() {
+  depends=('python')
+  optdepends=(
+    'python-eventlet: For asynchronous request handling with eventlet.'
+    'python-gevent: For asynchronous request handling with gevent.'
+  )
+
+  cd "${srcdir}/${pkgbase}-${pkgver}"
+
+  python setup.py install --root="${pkgdir}" --prefix=/usr --optimize=1
+
   rm -r "${pkgdir}/usr/bin/gunicorn_django" "${pkgdir}/usr/bin/gunicorn_paster"
+  install -Dm 644 LICENSE "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
+}
+
+package_python2-gunicorn() {
+  depends=('python2')
+  replaces=('gunicorn-python2')
+  provides=('python2-gunicorn')
+  conflicts=('gunicorn-python2')
+  optdepends=(
+    'python2-eventlet: For asynchronous request handling with eventlet.'
+    'python2-gevent: For asynchronous request handling with gevent.'
+  )
+
+  cd "${srcdir}/${pkgbase}-${pkgver}"
+
+  python setup.py install --root="${pkgdir}" --prefix=/usr --optimize=1
+
+  rm -r "${pkgdir}/usr/bin/gunicorn_django" "${pkgdir}/usr/bin/gunicorn_paster"
+  mv "${pkgdir}/usr/bin/gunicorn" "${pkgdir}/usr/bin/python2-gunicorn"
+  ln -s "/usr/bin/python2-gunicorn" "${pkgdir}/usr/bin/gunicorn-python2"
   install -Dm 644 LICENSE "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
 }
 
